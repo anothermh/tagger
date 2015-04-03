@@ -11,26 +11,27 @@ class TagsController < ApplicationController
 		# Possible tags values: anything
 	end
 
-	def find(entity_type, entity_id)
-		response = Tag.where("entity_type = ? AND entity_id = ?", params[:entity_type], params[:entity_id])
-	end
 
 	def create
 		# Accept POST data for a new object
 
-		# Search for the record first, if it exists then delete it
+		# Search for the entity first, and if it exists then delete it
 		entity = Tag.where("entity_type = ? AND entity_id = ?", params[:entity_type], params[:entity_id])
 		if entity.present?
-			entity.destroy
+			entity.destroy(entity[0][:id])
 		end
 
-		# Create a new entry
-		new_entity = { :entity_type => params[:entity_type], :entity_id => params[:entity_id], :tags => params[:tags] }
-		entity = Tag.new(new_entity)
-		entity.save
-
-		# Redirect to the new entity
-		redirect_to :action => "show", :entity_type => new_entity[:entity_type], :entity_id => new_entity[:entity_id]
+		# Create a new entity
+		begin
+			new_entity = { :entity_type => params[:entity_type], :entity_id => params[:entity_id], :tags => params[:tags] }
+			entity = Tag.new(new_entity)
+			entity.save
+		rescue ActiveRecord::ActiveRecordError
+			# If there was an error return 500
+			render :nothing => true, :status => :internal_server_error
+		end
+		# If there was no error return 200
+		render :nothing => true, :status => :ok
 	end
 
 
@@ -44,8 +45,14 @@ class TagsController < ApplicationController
 	def delete
 		# Delete the entity that matches the entered parameters
 		entity = Tag.where("entity_type = ? AND entity_id = ?", params[:entity_type], params[:entity_id])
-		entity.destroy
-		render :plain => entity
+		if entity.present?
+			entity.destroy(entity[0][:id])
+			# Return a 200 status code
+			render :nothing => true, :status => :ok
+		else
+			# Return a 204 error code
+			render :nothing => true, :status => :no_content
+		end
 	end
 
 
