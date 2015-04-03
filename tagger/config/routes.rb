@@ -6,8 +6,8 @@ Rails.application.routes.draw do
   get '/tags/:entity_type/:entity_id' => 'tags#show'
   delete '/tags/:entity_type/:entity_id' => 'tags#delete'
 
-  get '/stats' => 'stats#show'
-  get '/stats/:entity_type/:entity_id' => 'stats#show'
+  get '/stats' => 'tags#stats'
+  get '/stats/:entity_type/:entity_id' => 'tags#stats'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
