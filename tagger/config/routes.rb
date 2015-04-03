@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+
+  #resources :tags, only: [:create, :show, :destroy]
+
+  post '/tags' => 'tags#create'
+  get '/tags/:entity_type/:entity_id' => 'tags#show'
+  delete '/tags/:entity_type/:entity_id' => 'tags#delete'
+
+  get '/stats' => 'stats#show'
+  get '/stats/:entity_type/:entity_id' => 'stats#show'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
