@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get '/stats' => 'tags#stats'
   get '/stats/:entity_type/:entity_id' => 'tags#stats'
 
+  root 'tags#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
